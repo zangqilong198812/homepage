@@ -5,7 +5,6 @@ import { Footer } from './components/Footer'
 import { Header } from './components/Header'
 import { Hero } from './components/Hero'
 import { ShowcaseSection } from './components/ShowcaseSection'
-import { showcaseApps } from './data/showcaseApps'
 
 function App() {
   return (
@@ -13,7 +12,7 @@ function App() {
       <div className="studio-canvas">
         <Header />
         <Hero />
-        <ShowcaseSection items={showcaseApps} />
+        <ShowcaseSection />
         <AboutSection />
         <ContactSection />
         <Footer />

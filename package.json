@@ -4,8 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "generate:showcase": "node scripts/generate-showcase-data.mjs",
+    "dev": "npm run generate:showcase && vite",
+    "build": "npm run generate:showcase && vite build",
     "lint": "eslint .",
     "preview": "vite preview"
   },
