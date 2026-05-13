@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
 const REPO_URL = 'https://github.com/Rethinking-studio/clawpilot-skills'
 
@@ -57,22 +57,10 @@ function getPreferredLanguage() {
   return navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en'
 }
 
-function parsePairingState(language) {
-  const params = new URLSearchParams(window.location.search)
-  const dictionary = copyByLanguage[language]
-
-  return {
-    code: params.get('code') ?? '------',
-    device: params.get('device') ?? dictionary.deviceFallback,
-    expires: params.get('expires') ?? dictionary.expiresFallback,
-  }
-}
-
 export function PocketClawPairingPage() {
   const [language, setLanguage] = useState(getPreferredLanguage)
   const [copied, setCopied] = useState(false)
   const copy = copyByLanguage[language]
-  const pairing = useMemo(() => parsePairingState(language), [language])
 
   async function handleCopy() {
     await navigator.clipboard.writeText(REPO_URL)
@@ -114,14 +102,6 @@ export function PocketClawPairingPage() {
           <p className="eyebrow pairing-label">{copy.label}</p>
           <h1>{copy.title}</h1>
           <p className="pairing-intro">{copy.intro}</p>
-        </section>
-
-        <section className="pairing-card">
-          <div className="pairing-code">{pairing.code}</div>
-          <div className="pairing-meta">
-            <span>{pairing.device}</span>
-            <span>{pairing.expires}</span>
-          </div>
         </section>
 
         <section className="pairing-repo-block">
