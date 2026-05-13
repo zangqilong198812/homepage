@@ -16,14 +16,14 @@ const runtimeInstructions = {
       '这台主机应按 OpenClaw 配对。生成配对码时请使用 clawpilot pair --runtime openclaw。',
     hermes:
       '这台主机应按 Hermes 配对。生成配对码时请使用 clawpilot pair --runtime hermes，并确认本地 Hermes API 健康可用。',
-    ccconnect: `这台主机应按 Coding Agent 主机配对，用于 Codex、Claude Code、Gemini CLI、Cursor Agent 或类似本地 coding agent。请按照 ${CC_CONNECT_URL} 安装 cc-connect，然后运行 clawpilot prepare-ccconnect 生成带 PocketClaw 占位 channel 的 ~/.cc-connect/config.toml，不要改成 dummy platform，也不要要求我选择 Feishu、Telegram、Discord、WeCom 或 Weixin。确认 cc-connect 已作为 daemon 安装并重启后，最后使用 clawpilot pair --runtime ccconnect 生成配对码。`,
+    ccconnect: `这台主机应按 Coding Agent 主机配对，用于 Codex、Claude Code、Gemini CLI、Cursor Agent 或类似本地 coding agent。请按照 ${CC_CONNECT_URL} 安装 cc-connect，然后运行 clawpilot prepare-ccconnect 生成带 PocketClaw 占位 channel 的 ~/.cc-connect/config.toml，不要改成 dummy platform，也不要要求我选择 Feishu、Telegram、Discord、WeCom 或 Weixin。执行任何 cc-connect daemon 相关命令前，请先运行 which cc-connect，并使用它返回的绝对路径执行 daemon install/restart。确认 cc-connect 已作为 daemon 安装并重启后，最后使用 clawpilot pair --runtime ccconnect 生成配对码。`,
   },
   en: {
     openclaw:
       'This host should pair as OpenClaw. When generating the pairing code, use clawpilot pair --runtime openclaw.',
     hermes:
       'This host should pair as Hermes. When generating the pairing code, use clawpilot pair --runtime hermes and confirm the local Hermes API is healthy and reachable.',
-    ccconnect: `This host should pair as a Coding Agent host for Codex, Claude Code, Gemini CLI, Cursor Agent, or similar local coding agents. Install cc-connect by following ${CC_CONNECT_URL}, then run clawpilot prepare-ccconnect to generate ~/.cc-connect/config.toml with a PocketClaw placeholder channel. Do not switch it to dummy platform, and do not ask me to choose Feishu, Telegram, Discord, WeCom, or Weixin. After confirming cc-connect is installed as a daemon and restarted, use clawpilot pair --runtime ccconnect to generate the pairing code.`,
+    ccconnect: `This host should pair as a Coding Agent host for Codex, Claude Code, Gemini CLI, Cursor Agent, or similar local coding agents. Install cc-connect by following ${CC_CONNECT_URL}, then run clawpilot prepare-ccconnect to generate ~/.cc-connect/config.toml with a PocketClaw placeholder channel. Do not switch it to dummy platform, and do not ask me to choose Feishu, Telegram, Discord, WeCom, or Weixin. Before running any cc-connect daemon command, run which cc-connect and use the absolute path it returns for daemon install/restart. After confirming cc-connect is installed as a daemon and restarted, use clawpilot pair --runtime ccconnect to generate the pairing code.`,
   },
 }
 
@@ -46,7 +46,7 @@ ${REPO_URL}
 2. If this is a Linux or Windows host and an older ClawPilot was previously installed, run \`clawpilot install\` once after upgrading so the background service is migrated to pm2.
 3. After that, use the \`clawpilot-pair\` skill to complete PocketClaw pairing for me.
 4. Follow the skill step by step and do not skip checks.
-5. If successful, print the final 8-digit pairing code on its own line so I can copy it easily.
+5. If successful, print the final 8-character pairing code on its own line so I can copy it easily.
 6. If it fails, tell me exactly which step failed and the next command that should be run.
 
 {runtime-specific-instruction}`,
@@ -108,7 +108,7 @@ const copyByLanguage = {
     steps: [
       'Choose the host type you want to pair',
       'Copy the full prompt and send it to the Agent on that computer',
-      'Wait for the Agent to output an 8-digit pairing code',
+      'Wait for the Agent to output an 8-character pairing code',
       'Return to PocketClaw and scan or enter the pairing code',
     ],
   },
@@ -218,8 +218,27 @@ export function PocketClawPairingPage() {
           {mobileClient ? <div className="pairing-mobile-hint">{copy.mobileHint}</div> : null}
         </section>
 
+        {pairing.code ? (
+          <section className="pairing-code-block">
+            <div className="pairing-code-card">
+              <p className="eyebrow">{pairing.device || runtimeLabels[runtime]}</p>
+              <div className="pairing-code">{pairing.code}</div>
+              <h2>{copy.codeTitle}</h2>
+              <p className="pairing-code-note">{copy.codeBody}</p>
+              {pairing.expires ? <p className="pairing-code-expiry">{pairing.expires}</p> : null}
+              <button
+                className="pairing-copy-button pairing-copy-button-primary"
+                onClick={() => copyText(pairing.code, copy.codeCopied)}
+                type="button"
+              >
+                {copy.copyCode}
+              </button>
+            </div>
+          </section>
+        ) : null}
+
         <section className="pairing-flow-block">
-          <div className="pairing-flow-card">
+          <div className={`pairing-flow-card${pairing.code ? ' pairing-flow-card-secondary' : ''}`}>
             <div className="pairing-runtime-header">
               <p className="eyebrow">{copy.runtimeLabel}</p>
               <div className="pairing-runtime-grid">
@@ -256,25 +275,6 @@ export function PocketClawPairingPage() {
             {feedback ? <div className="eyebrow pairing-copy-feedback">{feedback}</div> : null}
           </div>
         </section>
-
-        {pairing.code ? (
-          <section className="pairing-code-block">
-            <div className="pairing-code-card">
-              <p className="eyebrow">{pairing.device || runtimeLabels[runtime]}</p>
-              <div className="pairing-code">{pairing.code}</div>
-              <h2>{copy.codeTitle}</h2>
-              <p className="pairing-code-note">{copy.codeBody}</p>
-              {pairing.expires ? <p className="pairing-code-expiry">{pairing.expires}</p> : null}
-              <button
-                className="pairing-copy-button pairing-copy-button-primary"
-                onClick={() => copyText(pairing.code, copy.codeCopied)}
-                type="button"
-              >
-                {copy.copyCode}
-              </button>
-            </div>
-          </section>
-        ) : null}
 
         <section className="pairing-repo-block">
           <div className="section-header eyebrow">{copy.repoLabel}</div>

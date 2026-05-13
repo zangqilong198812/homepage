@@ -487,6 +487,10 @@ em {
   gap: 2rem;
 }
 
+.pairing-flow-card-secondary {
+  opacity: 0.82;
+}
+
 .pairing-runtime-header {
   display: grid;
   gap: 1rem;
