@@ -11,7 +11,6 @@ const copyByLanguage = {
     title: 'Connect PocketClaw to your current device.',
     intro:
       'Give the repository below to your AI agent, then follow the pairing instructions inside PocketClaw.',
-    statusFallback: 'Ready to pair',
     deviceFallback: 'Your device',
     expiresFallback: 'This pairing request stays active until it is replaced.',
     repoLabel: 'Repository for AI agent',
@@ -33,7 +32,6 @@ const copyByLanguage = {
     title: '将 PocketClaw 连接到你当前的设备。',
     intro:
       '把下面这个仓库地址发给 AI agent，然后按照 PocketClaw 里的说明完成配对。',
-    statusFallback: '等待配对',
     deviceFallback: '当前设备',
     expiresFallback: '该配对请求在被替换前会一直有效。',
     repoLabel: '给 AI agent 的仓库',
@@ -66,7 +64,6 @@ function parsePairingState(language) {
   return {
     code: params.get('code') ?? '------',
     device: params.get('device') ?? dictionary.deviceFallback,
-    status: params.get('status') ?? dictionary.statusFallback,
     expires: params.get('expires') ?? dictionary.expiresFallback,
   }
 }
@@ -120,7 +117,6 @@ export function PocketClawPairingPage() {
         </section>
 
         <section className="pairing-card">
-          <div className="pairing-status eyebrow">{pairing.status}</div>
           <div className="pairing-code">{pairing.code}</div>
           <div className="pairing-meta">
             <span>{pairing.device}</span>
