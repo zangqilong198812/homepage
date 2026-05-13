@@ -455,21 +455,110 @@ em {
   max-width: 40ch;
 }
 
-.pairing-card {
-  align-items: center;
+.pairing-mobile-hint,
+.pairing-flow-card,
+.pairing-code-card,
+.pairing-repo-card {
   border: 1px solid var(--ink-faint);
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin: 0 auto;
-  max-width: 760px;
-  padding: var(--space-md);
-  text-align: center;
-  width: calc(100% - (var(--space-md) * 2));
 }
 
-.pairing-status {
+.pairing-mobile-hint {
+  line-height: 1.8;
+  max-width: 48ch;
+  padding: 1rem 1.2rem;
+}
+
+.pairing-flow-block,
+.pairing-code-block,
+.pairing-repo-block {
+  padding: 0 var(--space-md);
+}
+
+.pairing-flow-card,
+.pairing-code-card,
+.pairing-repo-card {
+  margin: 0 auto;
+  max-width: 920px;
+  padding: var(--space-md);
+}
+
+.pairing-flow-card {
+  display: grid;
+  gap: 2rem;
+}
+
+.pairing-runtime-header {
+  display: grid;
+  gap: 1rem;
+}
+
+.pairing-runtime-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.pairing-runtime-button {
+  background: transparent;
+  border: 1px solid var(--ink-faint);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 1.25rem;
+  padding: 1.1rem 1rem;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.pairing-runtime-button.is-active {
+  background: rgba(54, 58, 53, 0.08);
+  border-color: rgba(54, 58, 53, 0.22);
+}
+
+.pairing-runtime-button:hover {
+  transform: translateY(-2px);
+}
+
+.pairing-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.pairing-copy-button {
+  background: transparent;
+  border: 1px solid var(--ink);
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0.95rem 1.2rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.pairing-copy-button-primary,
+.pairing-copy-button:hover {
+  background: var(--ink);
+  color: var(--canvas);
+}
+
+.pairing-copy-feedback {
   color: var(--ink-soft);
+  text-align: center;
+}
+
+.pairing-code-block {
+  padding-top: var(--space-lg);
+}
+
+.pairing-code-card {
+  align-items: center;
+  display: grid;
+  gap: 1rem;
+  text-align: center;
 }
 
 .pairing-code {
@@ -479,10 +568,21 @@ em {
   line-height: 1;
 }
 
-.pairing-meta {
+.pairing-code-card h2 {
+  font-size: clamp(1.8rem, 3vw, 2.5rem);
+  line-height: 1.1;
+  margin: 0 auto;
+  max-width: 16ch;
+}
+
+.pairing-code-note,
+.pairing-repo-note {
+  line-height: 1.8;
+  text-align: center;
+}
+
+.pairing-code-expiry {
   color: var(--ink-soft);
-  display: grid;
-  gap: 0.65rem;
   line-height: 1.7;
 }
 
@@ -491,21 +591,12 @@ em {
 }
 
 .pairing-repo-block {
-  padding: var(--space-lg) var(--space-md) 0;
+  padding-top: var(--space-lg);
 }
 
 .pairing-repo-card {
-  border: 1px solid var(--ink-faint);
   display: grid;
   gap: 1.25rem;
-  margin: 0 auto;
-  max-width: 880px;
-  padding: var(--space-md);
-}
-
-.pairing-repo-note {
-  line-height: 1.8;
-  text-align: center;
 }
 
 .pairing-repo-url {
@@ -518,43 +609,19 @@ em {
   text-align: center;
 }
 
-.pairing-repo-actions {
-  align-items: center;
-  display: flex;
-  gap: 1rem;
-  justify-content: center;
-}
-
-.pairing-copy-button {
-  background: var(--ink);
-  border: 1px solid var(--ink);
-  color: var(--canvas);
-  cursor: pointer;
-  padding: 0.95rem 1.2rem;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease;
-}
-
-.pairing-copy-button:hover {
-  background: transparent;
-  color: var(--ink);
-}
-
-.pairing-copy-feedback {
-  color: var(--ink-soft);
-}
-
 .pairing-steps {
   display: grid;
   gap: 1rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 0 auto;
-  max-width: 680px;
-  text-align: center;
+  max-width: 920px;
 }
 
-.pairing-steps p {
+.pairing-step-card {
+  border: 1px solid var(--ink-faint);
   line-height: 1.8;
+  padding: 1.25rem 1.2rem;
+  text-align: center;
 }
 
 @media (max-width: 900px) {
@@ -584,7 +651,7 @@ em {
   }
 
   .pairing-header-actions,
-  .pairing-repo-actions {
+  .pairing-prompt-actions {
     flex-direction: column;
   }
 
@@ -616,17 +683,21 @@ em {
 
   .pairing-hero,
   .pairing-notes,
+  .pairing-flow-block,
+  .pairing-code-block,
   .pairing-repo-block {
     padding-left: var(--space-sm);
     padding-right: var(--space-sm);
   }
 
-  .pairing-card {
-    padding: var(--space-sm);
-    width: calc(100% - (var(--space-sm) * 2));
-  }
-
+  .pairing-flow-card,
+  .pairing-code-card,
   .pairing-repo-card {
     padding: var(--space-sm);
+  }
+
+  .pairing-runtime-grid,
+  .pairing-steps {
+    grid-template-columns: 1fr;
   }
 }
