@@ -6,6 +6,7 @@ export const showcaseApps = [
   },
   {
     id: '6759418062',
+    href: '/#/pocketclaw/pairing',
     typeFallback: 'iOS App',
     titleFallback: 'PocketClaw',
   },

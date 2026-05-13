@@ -33,7 +33,7 @@ function mergeAppData(configItems, apiResults) {
       offset: index % 2 === 1,
       title: apiItem?.trackName ?? item.titleFallback ?? `App ${index + 1}`,
       type: formatTypeLabel({ ...apiItem, ...item }),
-      href: apiItem?.trackViewUrl ?? item.href ?? '#contact',
+      href: item.href ?? apiItem?.trackViewUrl ?? '#contact',
       artwork: apiItem?.artworkUrl512 ?? item.artworkFallback ?? null,
     }
   })
