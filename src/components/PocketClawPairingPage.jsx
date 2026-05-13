@@ -1,38 +1,122 @@
-function parsePairingState() {
-  const hash = window.location.hash || '#/'
-  const [, queryString = ''] = hash.split('?')
-  const params = new URLSearchParams(queryString)
+import { useMemo, useState } from 'react'
+
+const REPO_URL = 'https://github.com/Rethinking-studio/clawpilot-skills'
+
+const copyByLanguage = {
+  en: {
+    copied: 'Repository link copied',
+    copy: 'Copy Repository Link',
+    back: 'Back Home',
+    label: 'PocketClaw Pairing',
+    title: 'Connect PocketClaw to your current device.',
+    intro:
+      'Give the repository below to your AI agent, then follow the pairing instructions inside PocketClaw.',
+    statusFallback: 'Ready to pair',
+    deviceFallback: 'Your device',
+    expiresFallback: 'This pairing request stays active until it is replaced.',
+    repoLabel: 'Repository for AI agent',
+    repoNote:
+      'This repository contains the pairing and setup skills the agent should use.',
+    stepsTitle: 'How It Works',
+    steps: [
+      '1. Copy the repository link below and send it to your AI agent.',
+      '2. Open PocketClaw on your phone and start a pairing session.',
+      '3. Ask the agent to follow the repository instructions and complete the connection.',
+    ],
+    languageLabel: 'Language',
+  },
+  zh: {
+    copied: '仓库链接已复制',
+    copy: '复制仓库地址',
+    back: '返回首页',
+    label: 'PocketClaw 配对',
+    title: '将 PocketClaw 连接到你当前的设备。',
+    intro:
+      '把下面这个仓库地址发给 AI agent，然后按照 PocketClaw 里的说明完成配对。',
+    statusFallback: '等待配对',
+    deviceFallback: '当前设备',
+    expiresFallback: '该配对请求在被替换前会一直有效。',
+    repoLabel: '给 AI agent 的仓库',
+    repoNote: '这个仓库里包含了 agent 需要使用的配对与初始化 skills。',
+    stepsTitle: '使用方式',
+    steps: [
+      '1. 复制下面的仓库地址并发给你的 AI agent。',
+      '2. 在手机里打开 PocketClaw，发起一个新的配对会话。',
+      '3. 让 agent 按照仓库说明完成连接流程。',
+    ],
+    languageLabel: '语言',
+  },
+}
+
+function getPreferredLanguage() {
+  const params = new URLSearchParams(window.location.search)
+  const explicitLang = params.get('lang')
+
+  if (explicitLang === 'zh' || explicitLang === 'en') {
+    return explicitLang
+  }
+
+  return navigator.language.toLowerCase().startsWith('zh') ? 'zh' : 'en'
+}
+
+function parsePairingState(language) {
+  const params = new URLSearchParams(window.location.search)
+  const dictionary = copyByLanguage[language]
 
   return {
     code: params.get('code') ?? '------',
-    device: params.get('device') ?? 'Your device',
-    status: params.get('status') ?? 'Ready to pair',
-    expires: params.get('expires') ?? 'This code stays available until replaced.',
+    device: params.get('device') ?? dictionary.deviceFallback,
+    status: params.get('status') ?? dictionary.statusFallback,
+    expires: params.get('expires') ?? dictionary.expiresFallback,
   }
 }
 
 export function PocketClawPairingPage() {
-  const pairing = parsePairingState()
+  const [language, setLanguage] = useState(getPreferredLanguage)
+  const [copied, setCopied] = useState(false)
+  const copy = copyByLanguage[language]
+  const pairing = useMemo(() => parsePairingState(language), [language])
+
+  async function handleCopy() {
+    await navigator.clipboard.writeText(REPO_URL)
+    setCopied(true)
+    window.setTimeout(() => setCopied(false), 1800)
+  }
 
   return (
     <main className="page-shell pairing-shell">
       <div className="studio-canvas pairing-canvas">
         <header className="site-header pairing-header">
-          <a className="logo" href="#/">
+          <a className="logo" href="/">
             Rethinking.
           </a>
-          <a className="eyebrow pairing-back" href="#/">
-            Back Home
-          </a>
+          <div className="pairing-header-actions">
+            <div className="pairing-language-switch" aria-label={copy.languageLabel}>
+              <button
+                className={`pairing-language-button${language === 'en' ? ' is-active' : ''}`}
+                onClick={() => setLanguage('en')}
+                type="button"
+              >
+                EN
+              </button>
+              <button
+                className={`pairing-language-button${language === 'zh' ? ' is-active' : ''}`}
+                onClick={() => setLanguage('zh')}
+                type="button"
+              >
+                中文
+              </button>
+            </div>
+            <a className="eyebrow pairing-back" href="/">
+              {copy.back}
+            </a>
+          </div>
         </header>
 
         <section className="pairing-hero">
-          <p className="eyebrow pairing-label">PocketClaw Pairing</p>
-          <h1>Connect PocketClaw to your current device.</h1>
-          <p className="pairing-intro">
-            Open PocketClaw on your phone, choose <em>Pair Device</em>, and use
-            the code below to complete the connection.
-          </p>
+          <p className="eyebrow pairing-label">{copy.label}</p>
+          <h1>{copy.title}</h1>
+          <p className="pairing-intro">{copy.intro}</p>
         </section>
 
         <section className="pairing-card">
@@ -44,12 +128,26 @@ export function PocketClawPairingPage() {
           </div>
         </section>
 
+        <section className="pairing-repo-block">
+          <div className="section-header eyebrow">{copy.repoLabel}</div>
+          <div className="pairing-repo-card">
+            <p className="pairing-repo-note">{copy.repoNote}</p>
+            <code className="pairing-repo-url">{REPO_URL}</code>
+            <div className="pairing-repo-actions">
+              <button className="pairing-copy-button" onClick={handleCopy} type="button">
+                {copy.copy}
+              </button>
+              {copied ? <span className="eyebrow pairing-copy-feedback">{copy.copied}</span> : null}
+            </div>
+          </div>
+        </section>
+
         <section className="pairing-notes">
-          <div className="section-header eyebrow">How It Works</div>
+          <div className="section-header eyebrow">{copy.stepsTitle}</div>
           <div className="pairing-steps">
-            <p>1. Launch PocketClaw on your mobile device.</p>
-            <p>2. Enter the pairing code exactly as shown above.</p>
-            <p>3. Confirm the session to begin controlling your remote agent.</p>
+            {copy.steps.map((step) => (
+              <p key={step}>{step}</p>
+            ))}
           </div>
         </section>
       </div>

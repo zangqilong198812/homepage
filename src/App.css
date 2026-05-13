@@ -388,6 +388,33 @@ em {
   padding-bottom: var(--space-md);
 }
 
+.pairing-header-actions {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+}
+
+.pairing-language-switch {
+  border: 1px solid var(--ink-faint);
+  display: inline-flex;
+}
+
+.pairing-language-button {
+  background: transparent;
+  border: 0;
+  color: var(--ink-soft);
+  cursor: pointer;
+  font-size: 0.74rem;
+  letter-spacing: 0.18em;
+  padding: 0.7rem 0.9rem;
+  text-transform: uppercase;
+}
+
+.pairing-language-button.is-active {
+  background: rgba(54, 58, 53, 0.08);
+  color: var(--ink);
+}
+
 .pairing-back {
   align-items: center;
   display: inline-flex;
@@ -463,6 +490,61 @@ em {
   padding: var(--space-lg) var(--space-md) var(--space-xl);
 }
 
+.pairing-repo-block {
+  padding: var(--space-lg) var(--space-md) 0;
+}
+
+.pairing-repo-card {
+  border: 1px solid var(--ink-faint);
+  display: grid;
+  gap: 1.25rem;
+  margin: 0 auto;
+  max-width: 880px;
+  padding: var(--space-md);
+}
+
+.pairing-repo-note {
+  line-height: 1.8;
+  text-align: center;
+}
+
+.pairing-repo-url {
+  background: rgba(54, 58, 53, 0.04);
+  border: 1px solid var(--ink-faint);
+  font-size: 0.96rem;
+  line-height: 1.7;
+  overflow-wrap: anywhere;
+  padding: 1rem 1.2rem;
+  text-align: center;
+}
+
+.pairing-repo-actions {
+  align-items: center;
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+}
+
+.pairing-copy-button {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: var(--canvas);
+  cursor: pointer;
+  padding: 0.95rem 1.2rem;
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.pairing-copy-button:hover {
+  background: transparent;
+  color: var(--ink);
+}
+
+.pairing-copy-feedback {
+  color: var(--ink-soft);
+}
+
 .pairing-steps {
   display: grid;
   gap: 1rem;
@@ -501,6 +583,11 @@ em {
     align-items: center;
   }
 
+  .pairing-header-actions,
+  .pairing-repo-actions {
+    flex-direction: column;
+  }
+
   .site-header,
   .site-footer,
   .section-block {
@@ -528,7 +615,8 @@ em {
   }
 
   .pairing-hero,
-  .pairing-notes {
+  .pairing-notes,
+  .pairing-repo-block {
     padding-left: var(--space-sm);
     padding-right: var(--space-sm);
   }
@@ -536,5 +624,9 @@ em {
   .pairing-card {
     padding: var(--space-sm);
     width: calc(100% - (var(--space-sm) * 2));
+  }
+
+  .pairing-repo-card {
+    padding: var(--space-sm);
   }
 }
