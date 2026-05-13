@@ -14,6 +14,9 @@ const copyByLanguage = {
     statusFallback: 'Ready to pair',
     deviceFallback: 'Your device',
     expiresFallback: 'This pairing request stays active until it is replaced.',
+    waitingTitle: 'Waiting for PocketClaw to pair',
+    waitingBody:
+      'Keep this page open while your phone and AI agent complete the pairing flow.',
     repoLabel: 'Repository for AI agent',
     repoNote:
       'This repository contains the pairing and setup skills the agent should use.',
@@ -36,6 +39,8 @@ const copyByLanguage = {
     statusFallback: '等待配对',
     deviceFallback: '当前设备',
     expiresFallback: '该配对请求在被替换前会一直有效。',
+    waitingTitle: '等待 PocketClaw 完成配对',
+    waitingBody: '保持这个页面开启，等待手机端和 AI agent 完成整个配对流程。',
     repoLabel: '给 AI agent 的仓库',
     repoNote: '这个仓库里包含了 agent 需要使用的配对与初始化 skills。',
     stepsTitle: '使用方式',
@@ -125,6 +130,18 @@ export function PocketClawPairingPage() {
           <div className="pairing-meta">
             <span>{pairing.device}</span>
             <span>{pairing.expires}</span>
+          </div>
+        </section>
+
+        <section className="pairing-waiting-block">
+          <div className="pairing-waiting-card">
+            <div className="pairing-waiting-indicator" aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </div>
+            <h2>{copy.waitingTitle}</h2>
+            <p>{copy.waitingBody}</p>
           </div>
         </section>
 
